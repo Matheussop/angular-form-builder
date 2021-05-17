@@ -3,3 +3,6 @@
 @import "~bootswatch/dist/cosmo/_bootswatch.scss";
 $fa-font-path: '~font-awesome/fonts';
 @import '~font-awesome/scss/font-awesome';
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

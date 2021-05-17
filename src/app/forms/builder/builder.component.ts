@@ -18,6 +18,7 @@ export class BuilderComponent implements AfterViewInit {
 
   onChange(event) {
     this.jsonElement.nativeElement.innerHTML = '';
+    console.log(event.form);
     this.jsonElement.nativeElement.appendChild(document.createTextNode(JSON.stringify(event.form, null, 4)));
     this.refreshForm.emit({
       property: 'form',

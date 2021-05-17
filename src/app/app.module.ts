@@ -14,6 +14,7 @@ import { AppConfig } from './config';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { DataComponent } from './data/data.component';
+import { MaterialCustomComponent } from './CustomComponent';
 
 // Make sure we use fontawesome everywhere in Form.io renderers.
 (Formio as any).icons = 'fontawesome';
@@ -27,7 +28,8 @@ import { DataComponent } from './data/data.component';
   declarations: [
     AppComponent,
     HomeComponent,
-    DataComponent
+    DataComponent,
+    MaterialCustomComponent
   ],
   imports: [
     BrowserModule,
@@ -46,14 +48,6 @@ import { DataComponent } from './data/data.component';
       {
         path: 'forms',
         loadChildren: () => import('./forms/forms.module').then(m => m.FormsModule)
-      },
-      {
-        path: 'auth',
-        loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
-      },
-      {
-        path: 'event',
-        loadChildren: () => import('./event/event.module').then(m => m.EventModule)
       },
       {
         path: 'manager',
@@ -75,6 +69,7 @@ import { DataComponent } from './data/data.component';
       }
     }}
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [MaterialCustomComponent],
 })
 export class AppModule { }
