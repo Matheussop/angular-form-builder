@@ -2,19 +2,18 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Formio, FormioModule, FormioAppConfig } from '@formio/angular';
+import { Formio, FormioAppConfig } from '@formio/angular';
 // import premium from '@formio/premium';
 // Formio.use(premium);
 import { FormioGrid } from '@formio/angular/grid';
 import { FormioAuthService, FormioAuthConfig } from '@formio/angular/auth';
 import { FormioResources } from '@formio/angular/resource';
 import { PrismService } from './Prism.service';
-
+import { FormioModule } from './../../projects/angular-formio/src/formio.module';
 import { AppConfig } from './config';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { DataComponent } from './data/data.component';
-import { MaterialCustomComponent } from './CustomComponent';
 
 // Make sure we use fontawesome everywhere in Form.io renderers.
 (Formio as any).icons = 'fontawesome';
@@ -29,7 +28,6 @@ import { MaterialCustomComponent } from './CustomComponent';
     AppComponent,
     HomeComponent,
     DataComponent,
-    MaterialCustomComponent
   ],
   imports: [
     BrowserModule,
@@ -70,6 +68,5 @@ import { MaterialCustomComponent } from './CustomComponent';
     }}
   ],
   bootstrap: [AppComponent],
-  entryComponents: [MaterialCustomComponent],
 })
 export class AppModule { }
