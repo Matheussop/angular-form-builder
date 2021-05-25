@@ -13,8 +13,10 @@ import { FormioModule } from './../../projects/angular-formio/src/formio.module'
 import { AppConfig } from './config';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
-import { DataComponent } from './data/data.component';
-
+import {environment} from '../environments/environment'
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireDatabaseModule } from '@angular/fire/database';
+import { FormListComponent } from './form-list/form-list.component';
 // Make sure we use fontawesome everywhere in Form.io renderers.
 (Formio as any).icons = 'fontawesome';
 
@@ -27,21 +29,19 @@ import { DataComponent } from './data/data.component';
   declarations: [
     AppComponent,
     HomeComponent,
-    DataComponent,
+    FormListComponent,
   ],
   imports: [
     BrowserModule,
     CommonModule,
     FormioModule,
     FormioGrid,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireDatabaseModule,
     RouterModule.forRoot([
       {
         path: '',
         component: HomeComponent
-      },
-      {
-        path: 'data',
-        component: DataComponent
       },
       {
         path: 'forms',
@@ -49,7 +49,7 @@ import { DataComponent } from './data/data.component';
       },
       {
         path: 'manager',
-        loadChildren: () => import('./form/form.module').then(m => m.FormModule)
+        component: FormListComponent
       }
     ], {useHash: true})
   ],

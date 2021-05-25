@@ -1,4 +1,7 @@
-
+<div class="row">
+  <h2 class="ml-2 mr-2">Nome formulário: </h2>
+  <input #box (focusout)="onKey(box.value)" [value]="nomeform" class="nameButton mb-3">
+</div>
 <form-builder [form]="form" (change)="onChange($event)"></form-builder>
 <hr/>
 <h3 class="text-center text-muted">Json referente ao formulário criado</h3>
@@ -9,3 +12,7 @@
 <div class="well jsonviewer">
   <formio [form]="form" [refresh]="refreshForm"></formio>
 </div>
+<div class="mb-3">
+  <button class="btn btn-outline-secondary btn-sm form-btn form-btn-use" (click)="saveForm($event, form, 'view')"><span class="fa fa-list-alt"></span> Salvar Formulário</button>&nbsp;
+</div>
+

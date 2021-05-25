@@ -1,0 +1,11 @@
+<button type="button" class="btn btn-primary ml-2" (click)="newForm()">Novo Form</button>
+<div class="card mt-2" *ngFor="let form of formList | async">
+    <div class="row">
+        <div class="card-body ml-4">
+            <h1 class="card-title pt-3">{{form.NomeFormulario}}</h1>
+        </div>
+            <button type="button" class="btn btn-default" (click)="view(form)">View</button>
+            <button type="button" class="btn btn-primary" (click)="edit(form, form.key)">Editar</button>
+            <button type="button" class="btn btn-danger ml-2" (click)="delete(form.key)">Excluir</button>
+    </div>
+  </div>

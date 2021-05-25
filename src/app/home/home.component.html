@@ -9,7 +9,11 @@
   <div class="card-body">
     <h5 class="card-title">Result</h5>
     <div class="card bg-light p-3">
-      <formio src="{{ config.appUrl }}/example"></formio>
+      <formio (submit)="onSubmit($event)" [form]="form" [submission]="submission"></formio>
     </div>
+  </div>
+  <button class="btn btn-outline-secondary btn-sm form-btn form-btn-use" (click)="preecherRespostas($event, form, 'view')"><span class="fa fa-list-alt"></span> Preecher Respostas Formulário</button>&nbsp;
+  <div class="card mt-2" *ngFor="let resp of respostasList ">
+    <p class="text-center m-2">{{resp}}</p>
   </div>
 </div>
