@@ -30,7 +30,6 @@ export class BuilderComponent implements AfterViewInit {
   @ViewChild("json", { static: true }) jsonElement?: ElementRef;
   @ViewChild("code", { static: true }) codeElement?: ElementRef;
   @ViewChild("FileSelectInputDialog") FileSelectInputDialog: ElementRef;
-  public files: Set<File>;
   public form: Object;
   public nomeform : string = ''; 
   key: string = '';
@@ -43,36 +42,36 @@ export class BuilderComponent implements AfterViewInit {
     this.generateForm = { components: []
     };
   }
+  ngOnInit(){
+    if (localStorage.getItem("Form")) {
+      var newForm = localStorage.getItem("Form").valueOf();
+      this.jsonElement.nativeElement.appendChild(
+        document.createTextNode(JSON.stringify(JSON.parse(newForm).components, null, 4))
+      );
+      this.refreshForm.emit({
+        property: "form",
+        value: JSON.parse(newForm),
+      });
+      this.generateForm = JSON.parse(newForm).components;
+      this.form = JSON.parse(newForm);
+      this.key = JSON.parse(newForm).key;
+      this.version = JSON.parse(newForm).version
+      this.nomeform = JSON.parse(newForm).NomeFormulario.toString();
+    }
+  }
+  ngAfterViewInit() {
+    this.prism.init();
+  }
   onChange(event) {
     this.jsonElement.nativeElement.innerHTML = "";
     this.jsonElement.nativeElement.appendChild(
-      document.createTextNode(JSON.stringify(event.form, null, 4))
+      document.createTextNode(JSON.stringify(event.form.components  , null, 4))
     );
     this.refreshForm.emit({
       property: "form",
       value: event.form,
     });
     this.generateForm = event.form;
-  }
-  ngOnInit(){
-    if (localStorage.getItem("Form")) {
-      var newForm = localStorage.getItem("Form").valueOf();
-      this.jsonElement.nativeElement.appendChild(
-        document.createTextNode(JSON.stringify(JSON.parse(newForm), null, 4))
-      );
-      this.refreshForm.emit({
-        property: "form",
-        value: JSON.parse(newForm),
-      });
-      this.generateForm = JSON.parse(newForm);
-      this.form = JSON.parse(newForm);
-      this.key = this.form.key;
-      this.version = this.form.version
-      this.nomeform = this.form.NomeFormulario.toString();
-    }
-  }
-  ngAfterViewInit() {
-    this.prism.init();
   }
   saveForm() {
     if(this.key){
@@ -81,10 +80,11 @@ export class BuilderComponent implements AfterViewInit {
       this.generateForm.version = this.version + 1;
       var nameComponents = `${this.version}components`
       this.version++;
-      var obj = {[nameComponents]:  this.generateForm.components}
+      var obj = {[nameComponents]:  this.form.components}
       const form = Object.assign({},obj,this.generateForm)
       this.builderService.update(form, this.key);
       localStorage.setItem('Form',JSON.stringify(form))
+      this.form = this.generateForm
     }
     else{
       var t = {"NomeFormulario": this.nomeform, "version": 0}
@@ -94,22 +94,9 @@ export class BuilderComponent implements AfterViewInit {
         (value) => this.key = value
       )
       localStorage.setItem('Form',JSON.stringify(form))
+      this.form = this.generateForm
     }
   }
-
-  // public carregarForm() {
-  //   if (localStorage.getItem("Form")) {
-  //     var newForm = localStorage.getItem("Form").valueOf();
-  //     this.jsonElement.nativeElement.appendChild(
-  //       document.createTextNode(JSON.stringify(JSON.parse(newForm), null, 4))
-  //     );
-  //     this.refreshForm.emit({
-  //       property: "form",
-  //       value: JSON.parse(newForm),
-  //     });
-  //     this.form = JSON.parse(newForm);
-  //   }
-  // }
 
   onKey(value: string) {
     this.nomeform = value ;

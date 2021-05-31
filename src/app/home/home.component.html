@@ -13,7 +13,12 @@
     </div>
   </div>
   <button class="btn btn-outline-secondary btn-sm form-btn form-btn-use" (click)="preecherRespostas($event, form, 'view')"><span class="fa fa-list-alt"></span> Preecher Respostas Formulário</button>&nbsp;
-  <div class="card mt-2" *ngFor="let resp of respostasList ">
-    <p class="text-center m-2">{{resp}}</p>
+  <div class="card mt-2 mb-2" *ngFor="let version of respostasList ">
+    <li class="text-center m-2">Versão: {{version.version}}</li>
+    <ul>
+      <li *ngFor="let resposta of version.data ">
+        {{resposta | json }}
+      </li>
+    </ul>
   </div>
 </div>
