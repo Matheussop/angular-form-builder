@@ -26,7 +26,7 @@
     "@angular/platform-browser-dynamic": "^11.0.5",
     "@angular/router": "^11.0.5",
     "@formio/angular": "^5.0.0",
-    "@types/file-saver": "^2.0.2",
+    "@webcomponents/custom-elements": "^1.4.3",
     "bootstrap": "^4.5.3",
     "bootswatch": "^4.5.3",
     "core-js": "^3.8.1",

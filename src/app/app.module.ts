@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, Injector } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Formio, FormioAppConfig } from '@formio/angular';
@@ -17,6 +17,9 @@ import {environment} from '../environments/environment'
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { FormListComponent } from './form-list/form-list.component';
+import { registerMeuComponente } from './meu-componente/meu-componente.formio';
+import { registerEstadoCidadeComponent } from './estado-cidade/estado-cidade.formio';
+
 // Make sure we use fontawesome everywhere in Form.io renderers.
 (Formio as any).icons = 'fontawesome';
 
@@ -69,4 +72,6 @@ import { FormListComponent } from './form-list/form-list.component';
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule { 
+
+}

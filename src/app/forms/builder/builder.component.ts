@@ -64,14 +64,16 @@ export class BuilderComponent implements AfterViewInit {
   }
   onChange(event) {
     this.jsonElement.nativeElement.innerHTML = "";
-    this.jsonElement.nativeElement.appendChild(
-      document.createTextNode(JSON.stringify(event.form.components  , null, 4))
-    );
-    this.refreshForm.emit({
-      property: "form",
-      value: event.form,
-    });
-    this.generateForm = event.form;
+    if(event.form){
+      this.jsonElement.nativeElement.appendChild(
+        document.createTextNode(JSON.stringify(event.form.components  , null, 4))
+      );
+      this.refreshForm.emit({
+        property: "form",
+        value: event.form,
+      });
+      this.generateForm = event.form;
+    }
   }
   saveForm() {
     if(this.key){
