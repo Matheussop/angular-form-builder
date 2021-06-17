@@ -63,6 +63,13 @@ export class BuilderComponent implements AfterViewInit {
     this.prism.init();
   }
   onChange(event) {
+    // event.form.components.map(item => {
+    //   console.log(item)
+    //   if(item.key === 'nome1'){
+    //     item.defaultValue = '4'
+    //     item.label = 'modifiquei a label'
+    //   }
+    // })
     this.jsonElement.nativeElement.innerHTML = "";
     if(event.form){
       this.jsonElement.nativeElement.appendChild(

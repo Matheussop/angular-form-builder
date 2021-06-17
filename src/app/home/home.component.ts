@@ -30,12 +30,13 @@ export class HomeComponent implements AfterViewInit {
   respostasListObservable: Observable<any>;
   respostasList: any[];
   respostaList: Observable<any>;
-
+  params: Object;
   constructor(
     public config: FormioAppConfig,
     public prism: PrismService,
     public viewService: ViewService
   ) {
+    this.params = {nome: "Matheus", sobrenome: "Luiz"},
     this.form = [];
     this.respostasList = [];
   }

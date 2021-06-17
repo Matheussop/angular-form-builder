@@ -30,6 +30,7 @@ export class EstadoCidadeComponent
 
   segundoArrayDependente = [];
 
+  //  valor padrao para linkar um select no outro value: '{"cidade":"beloHorizonte", "estado":"minas"}',
   formulario = new FormGroup({
     array1: new FormControl(''),
     array2: new FormControl(''),

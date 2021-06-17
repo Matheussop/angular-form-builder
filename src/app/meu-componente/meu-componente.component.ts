@@ -21,11 +21,13 @@ export class MeuComponenteComponent implements FormioCustomComponent<number> {
 
   @Input() placeholder: string;
   @Input() myOption: string;
+  @Input() Input: string;
 
   @Output()
   formioEvent = new EventEmitter<FormioEvent>();
   // https://github.com/formio/angular/pull/443
   emitirEvento() {
+    console.log(this.value + " valor do value")
     this.formioEvent.emit({
       eventName: 'customEvent',
       data: { teste: 'teste' },

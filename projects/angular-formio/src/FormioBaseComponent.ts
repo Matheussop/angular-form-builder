@@ -13,6 +13,7 @@ import { AlertsPosition } from './types/alerts-position';
   template: ''
 })
 export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
+  @Input() params?: any;
   @Input() form?: FormioForm;
   @Input() submission?: any = {};
   @Input() src?: string;
@@ -200,6 +201,7 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit() {
+
     Evaluator.noeval = this.noeval;
     this.initialize();
 
@@ -300,6 +302,15 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: any) {
+    if(this.params){
+      changes.form.currentValue.components.map((item) => {
+        var objetos = Object.keys(this.params);
+        objetos.map(nomeObjetos => {
+          if(item.key == nomeObjetos)
+          item.defaultValue = this.params[nomeObjetos]
+        })
+      })
+    }
     Evaluator.noeval = this.noeval;
     this.initialize();
 
