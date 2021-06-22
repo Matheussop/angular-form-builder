@@ -1,16 +1,33 @@
-import { Component, ElementRef, EventEmitter, Input, NgZone, OnChanges, OnDestroy, OnInit, Optional, Output, ViewChild } from '@angular/core';
-import { FormioService } from './formio.service';
-import { FormioAlerts } from './components/alerts/formio.alerts';
-import { FormioAppConfig } from './formio.config';
-import { FormioError, FormioForm, FormioOptions, FormioRefreshValue } from './formio.common';
-import { assign, get, isEmpty } from 'lodash';
-import { CustomTagsService } from './custom-component/custom-tags.service';
-import Evaluator from 'formiojs/utils/Evaluator';
-import { fastCloneDeep } from 'formiojs/utils/utils';
-import { AlertsPosition } from './types/alerts-position';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  NgZone,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Optional,
+  Output,
+  ViewChild,
+} from "@angular/core";
+import { FormioService } from "./formio.service";
+import { FormioAlerts } from "./components/alerts/formio.alerts";
+import { FormioAppConfig } from "./formio.config";
+import {
+  FormioError,
+  FormioForm,
+  FormioOptions,
+  FormioRefreshValue,
+} from "./formio.common";
+import { assign, get, isEmpty } from "lodash";
+import { CustomTagsService } from "./custom-component/custom-tags.service";
+import Evaluator from "formiojs/utils/Evaluator";
+import { fastCloneDeep } from "formiojs/utils/utils";
+import { AlertsPosition } from "./types/alerts-position";
 
 @Component({
-  template: ''
+  template: "",
 })
 export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
   @Input() params?: any;
@@ -20,11 +37,11 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
   @Input() url?: string;
   @Input() service?: FormioService;
   @Input() options?: FormioOptions;
-  @Input() noeval ? = false;
+  @Input() noeval? = false;
   @Input() formioOptions?: any;
   @Input() renderOptions?: any;
-  @Input() readOnly ? = false;
-  @Input() viewOnly ? = false;
+  @Input() readOnly? = false;
+  @Input() viewOnly? = false;
   @Input() hideComponents?: string[];
   @Input() refresh?: EventEmitter<FormioRefreshValue>;
   @Input() error?: EventEmitter<any>;
@@ -32,7 +49,7 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
   @Input() language?: EventEmitter<string>;
   @Input() hooks?: any = {};
   @Input() renderer?: any;
-  @Input() watchSubmissionErrors ? = false;
+  @Input() watchSubmissionErrors? = false;
   @Output() render = new EventEmitter<object>();
   @Output() customEvent = new EventEmitter<object>();
   @Output() fileUploadingStatus = new EventEmitter<string>();
@@ -46,7 +63,7 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
   @Output() formLoad = new EventEmitter<any>();
   @Output() submissionLoad = new EventEmitter<any>();
   @Output() ready = new EventEmitter<FormioBaseComponent>();
-  @ViewChild('formio', { static: true }) formioElement?: ElementRef<any>;
+  @ViewChild("formio", { static: true }) formioElement?: ElementRef<any>;
 
   public AlertsPosition = AlertsPosition;
   public formio: any;
@@ -64,7 +81,7 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
   constructor(
     public ngZone: NgZone,
     @Optional() public config: FormioAppConfig,
-    @Optional() public customTags?: CustomTagsService,
+    @Optional() public customTags?: CustomTagsService
   ) {
     this.isLoading = true;
     this.formioReady = new Promise((ready) => {
@@ -78,27 +95,50 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
 
   getRendererOptions() {
     const extraTags = this.customTags ? this.customTags.tags : [];
-    return assign({}, {
-      icons: get(this.config, 'icons', 'fontawesome'),
-      noAlerts: get(this.options, 'noAlerts', true),
-      readOnly: this.readOnly,
-      viewAsHtml: this.viewOnly,
-      i18n: get(this.options, 'i18n', null),
-      fileService: get(this.options, 'fileService', null),
-      hooks: this.hooks,
-      sanitizeConfig: {
-        addTags: extraTags
-      }
-    }, this.renderOptions || {});
+    return assign(
+      {},
+      {
+        icons: get(this.config, "icons", "fontawesome"),
+        noAlerts: get(this.options, "noAlerts", true),
+        readOnly: this.readOnly,
+        viewAsHtml: this.viewOnly,
+        i18n: get(this.options, "i18n", null),
+        fileService: get(this.options, "fileService", null),
+        hooks: this.hooks,
+        sanitizeConfig: {
+          addTags: extraTags,
+        },
+      },
+      this.renderOptions || {}
+    );
   }
-
+  percorrerForm(item: any){
+    var objetos = Object.keys(this.params);
+    if(item.components){
+      item.components.map((item2) => {
+        this.percorrerForm(item2)
+      })
+    }else{
+      objetos.map((nomeObjetos) => {
+        if (item.key == nomeObjetos) {
+          item.disabled = this.params[nomeObjetos].disabled;
+        }
+      });
+    }
+    return item;
+  }
   createRenderer() {
+    if(this.params){ 
+      this.form.components.map((item) => {
+        this.percorrerForm(item)
+      })
+    }
     const Renderer = this.getRenderer();
-    const form = (new Renderer(
+    const form = new Renderer(
       this.formioElement ? this.formioElement.nativeElement : null,
       this.form,
       this.getRendererOptions()
-    ));
+    );
     return form.instance;
   }
 
@@ -116,12 +156,12 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
 
     // Clear out the element to render the new form.
     if (this.formioElement && this.formioElement.nativeElement) {
-      this.formioElement.nativeElement.innerHTML = '';
+      this.formioElement.nativeElement.innerHTML = "";
     }
     this.formio = this.createRenderer();
     this.formio.submission = this.submission;
     if (this.renderOptions && this.renderOptions.validateOnInit) {
-      this.formio.setValue(this.submission, {validateOnInit: true});
+      this.formio.setValue(this.submission, { validateOnInit: true });
     }
     if (this.url) {
       this.formio.setUrl(this.url, this.formioOptions || {});
@@ -130,29 +170,37 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
       this.formio.setUrl(this.src, this.formioOptions || {});
     }
     this.formio.nosubmit = true;
-    this.formio.on('prevPage', (data: any) => this.ngZone.run(() => this.onPrevPage(data)));
-    this.formio.on('nextPage', (data: any) => this.ngZone.run(() => this.onNextPage(data)));
-    this.formio.on('change', (value: any, flags: any, isModified: boolean) => this.ngZone.run(() => this.onChange(value, flags, isModified)));
-    this.formio.on('customEvent', (event: any) =>
+    this.formio.on("prevPage", (data: any) =>
+      this.ngZone.run(() => this.onPrevPage(data))
+    );
+    this.formio.on("nextPage", (data: any) =>
+      this.ngZone.run(() => this.onNextPage(data))
+    );
+    this.formio.on("change", (value: any, flags: any, isModified: boolean) =>
+      this.ngZone.run(() => this.onChange(value, flags, isModified))
+    );
+    this.formio.on("customEvent", (event: any) =>
       this.ngZone.run(() => this.customEvent.emit(event))
     );
 
-    ['fileUploadingStart', 'fileUploadingEnd'].forEach((eventName, index) => {
-      const status = !!index ? 'end' : 'start';
+    ["fileUploadingStart", "fileUploadingEnd"].forEach((eventName, index) => {
+      const status = !!index ? "end" : "start";
       this.formio.on(eventName, () =>
         this.ngZone.run(() => this.fileUploadingStatus.emit(status))
       );
     });
 
-    this.formio.on('submit', (submission: any, saved: boolean) =>
+    this.formio.on("submit", (submission: any, saved: boolean) =>
       this.ngZone.run(() => this.submitForm(submission, saved))
     );
-    this.formio.on('error', (err: any) => this.ngZone.run(() => {
-      this.submissionSuccess = false;
-      return this.onError(err);
-    }));
-    this.formio.on('render', () => this.ngZone.run(() => this.render.emit()));
-    this.formio.on('formLoad', (loadedForm: any) =>
+    this.formio.on("error", (err: any) =>
+      this.ngZone.run(() => {
+        this.submissionSuccess = false;
+        return this.onError(err);
+      })
+    );
+    this.formio.on("render", () => this.ngZone.run(() => this.render.emit()));
+    this.formio.on("formLoad", (loadedForm: any) =>
       this.ngZone.run(() => this.formLoad.emit(loadedForm))
     );
 
@@ -179,17 +227,17 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
     const extraTags = this.customTags ? this.customTags.tags : [];
     const defaultOptions: FormioOptions = {
       errors: {
-        message: 'Please fix the following errors before submitting.'
+        message: "Por favor resolva todos os erros antes de enviar o formulário.",
       },
       alerts: {
-        submitMessage: 'Submission Complete.'
+        submitMessage: "Respostas enviadas.",
       },
       disableAlerts: false,
       hooks: {
-        beforeSubmit: null
+        beforeSubmit: null,
       },
       sanitizeConfig: {
-        addTags: extraTags
+        addTags: extraTags,
       },
       alertsPosition: AlertsPosition.top,
     };
@@ -201,12 +249,23 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit() {
-
     Evaluator.noeval = this.noeval;
     this.initialize();
 
+    //[Modifição] Setar de acordo com os parametros recebidos valores default do form
+    if (this.params) {
+      this.formio.components.map((item) => {
+        var objetos = Object.keys(this.params);
+        objetos.map((nomeObjetos) => {
+          if (item.key == nomeObjetos) {
+            item.component.defaultValue = this.params[nomeObjetos].value;
+          }
+        });
+      });
+    }
+
     if (this.language) {
-      if (typeof this.language === 'string') {
+      if (typeof this.language === "string") {
         this.formio.language = this.language;
       } else {
         this.language.subscribe((lang: string) => {
@@ -228,8 +287,8 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
     if (this.success) {
       this.success.subscribe((message: string) => {
         this.alerts.setAlert({
-          type: 'success',
-          message: message || get(this.options, 'alerts.submitMessage')
+          type: "success",
+          message: message || get(this.options, "alerts.submitMessage"),
         });
       });
     }
@@ -260,11 +319,11 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
                 }
                 this.submission = this.formio.submission = submission;
               },
-              err => this.onError(err)
+              (err) => this.onError(err)
             );
           }
         },
-        err => this.onError(err)
+        (err) => this.onError(err)
       );
     }
     if (this.url && !this.service) {
@@ -290,10 +349,10 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
         this.formio.setSubmission(refresh.submission);
       } else {
         switch (refresh.property) {
-          case 'submission':
+          case "submission":
             this.formio.submission = refresh.value;
             break;
-          case 'form':
+          case "form":
             this.formio.form = refresh.value;
             break;
         }
@@ -302,15 +361,6 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: any) {
-    if(this.params){
-      changes.form.currentValue.components.map((item) => {
-        var objetos = Object.keys(this.params);
-        objetos.map(nomeObjetos => {
-          if(item.key == nomeObjetos)
-          item.defaultValue = this.params[nomeObjetos]
-        })
-      })
-    }
     Evaluator.noeval = this.noeval;
     this.initialize();
 
@@ -356,19 +406,19 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
 
     this.formio.setValue(fastCloneDeep(submission), {
       noValidate: true,
-      noCheck: true
+      noCheck: true,
     });
 
     if (saved) {
-      this.formio.emit('submitDone', submission);
+      this.formio.emit("submitDone", submission);
     }
     if (!noemit) {
       this.submit.emit(submission);
     }
     if (!this.success) {
       this.alerts.setAlert({
-        type: 'success',
-        message: get(this.options, 'alerts.submitMessage')
+        type: "success",
+        message: get(this.options, "alerts.submitMessage"),
       });
     }
   }
@@ -393,28 +443,25 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     if (this.formio && errors.length) {
-      this.formio.emit('submitError', errors);
+      this.formio.emit("submitError", errors);
     }
 
     // Iterate through each one and set the alerts array.
     errors.forEach((error: any) => {
-      const {
-        message,
-        paths,
-      } = error
+      const { message, paths } = error
         ? error.details
           ? {
-            message: error.details.map((detail) => detail.message),
-            paths: error.details.map((detail) => detail.path),
-          }
+              message: error.details.map((detail) => detail.message),
+              paths: error.details.map((detail) => detail.path),
+            }
           : {
-            message: error.message || error.toString(),
-            paths: error.path ? [error.path] : [],
-          }
+              message: error.message || error.toString(),
+              paths: error.path ? [error.path] : [],
+            }
         : {
-          message: '',
-          paths: [],
-        };
+            message: "",
+            paths: [],
+          };
 
       let shouldErrorDisplay = true;
 
@@ -422,11 +469,17 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
         paths.forEach((path, index) => {
           const component = this.formio.getComponent(path);
           if (component) {
-            const components = Array.isArray(component) ? component : [component];
-            const messageText = Array.isArray(message) ? message[index] : message;
-            components.forEach((comp) => comp.setCustomValidity(messageText, true));
+            const components = Array.isArray(component)
+              ? component
+              : [component];
+            const messageText = Array.isArray(message)
+              ? message[index]
+              : message;
+            components.forEach((comp) =>
+              comp.setCustomValidity(messageText, true)
+            );
             this.alerts.addAlert({
-              type: 'danger',
+              type: "danger",
               message: message[index],
               component,
             });
@@ -435,9 +488,9 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
         });
 
         if ((window as any).VPAT_ENABLED) {
-          if (typeof error ==='string' && this.formio.components) {
+          if (typeof error === "string" && this.formio.components) {
             this.formio.components.forEach((comp) => {
-              if (comp && comp.type !== 'button') {
+              if (comp && comp.type !== "button") {
                 comp.setCustomValidity(message, true);
               }
             });
@@ -451,7 +504,7 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
 
       if (shouldErrorDisplay) {
         this.alerts.addAlert({
-          type: 'danger',
+          type: "danger",
           message,
           component: error.component,
         });
@@ -467,12 +520,10 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
 
   submitExecute(submission: object, saved = false) {
     if (this.service && !this.url && !saved) {
-      this.service
-        .saveSubmission(submission)
-        .subscribe(
-          (sub: {}) => this.onSubmit(sub, true),
-          err => this.onError(err)
-        );
+      this.service.saveSubmission(submission).subscribe(
+        (sub: {}) => this.onSubmit(sub, true),
+        (err) => this.onError(err)
+      );
     } else {
       this.onSubmit(submission, false);
     }
@@ -490,7 +541,7 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
 
     // if they provide a beforeSubmit hook, then allow them to alter the submission asynchronously
     // or even provide a custom Error method.
-    const beforeSubmit = get(this.options, 'hooks.beforeSubmit');
+    const beforeSubmit = get(this.options, "hooks.beforeSubmit");
     if (beforeSubmit) {
       beforeSubmit(submission, (err: FormioError, sub: object) => {
         if (err) {
@@ -506,13 +557,13 @@ export class FormioBaseComponent implements OnInit, OnChanges, OnDestroy {
 
   onChange(value: any, flags: any, isModified: boolean) {
     if (this.watchSubmissionErrors && !this.submissionSuccess) {
-      const errors = get(this, 'formio.errors', []);
-      const alerts = get(this, 'alerts.alerts', []);
-      const submitted = get(this, 'formio.submitted', false);
+      const errors = get(this, "formio.errors", []);
+      const alerts = get(this, "alerts.alerts", []);
+      const submitted = get(this, "formio.submitted", false);
       if (submitted && (errors.length || alerts.length)) {
         this.onError(errors);
       }
     }
-    return this.change.emit({...value, flags, isModified});
+    return this.change.emit({ ...value, flags, isModified });
   }
 }

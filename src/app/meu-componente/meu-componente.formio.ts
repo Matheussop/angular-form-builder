@@ -14,8 +14,8 @@ const COMPONENT_OPTIONS: FormioCustomComponentInfo = {
   //  template: 'input', // Optional: define a template for the element. Default: input
   //  changeEvent: 'valueChange', // Optional: define the changeEvent when the formio updates the value in the state. Default: 'valueChange',
   //  editForm: Components.components.textfield.editForm, // Optional: define the editForm of the field. Default: the editForm of a textfield
-  editForm: Components.components.textfield.editForm, // Optional: define the editForm of the field. Default: the editForm of a textfield
-  //editForm: minimalEditForm, // Optional: define the editForm of the field. Default: the editForm of a textfield
+  //editForm: Components.components.datagrid.editForm, // Optional: define the editForm of the field. Default: the editForm of a textfield
+  editForm: minimalEditForm, // Optional: define the editForm of the field. Default: the editForm of a textfield
   //  documentation: '', // Optional: define the documentation of the field
   //  weight: 0, // Optional: define the weight in the builder group
   //  schema: {}, // Optional: define extra default schema for the field
@@ -35,45 +35,156 @@ export function registerMeuComponente(injector: Injector) {
 export function minimalEditForm() {
   return {
     components: [
-      { key: 'type', type: 'hidden' },
       {
-        weight: 0,
         type: 'textfield',
+        label: 'PlaceHolder',
+        key: 'placeholder',
+        tooltip: 'Texto que sera mostrado no placeholder.',
+        placeholder: 'Texto',
+        weight: 410,
         input: true,
-        key: 'label',
-        label: 'Nome do componente',
-        placeholder: 'Label',
-        validate: {
-          required: false,
+      },
+      {
+        type: 'checkbox',
+        label: 'Disable Adding / Removing Rows',
+        key: 'disableAddingRemovingRows',
+        tooltip: 'Check if you want to hide Add Another button and Remove Row button',
+        weight: 405,
+        input: true,
+        clearOnHide: false,
+        customConditional(context) {
+          return !context.data.enableRowGroups;
+        },
+        calculateValue(context) {
+          return context.data.enableRowGroups ? true : context.data.disableAddingRemovingRows;
         },
       },
       {
-        weight: 10,
-        type: 'textfield',
+        weight: 406,
+        type: 'textarea',
         input: true,
-        key: 'key',
-        label: 'Field Code',
-        placeholder: 'Field Code',
-        tooltip: 'The code/key/ID/name of the field.',
-        validate: {
-          required: true,
-          maxLength: 128,
-          pattern: '[A-Za-z]\\w*',
-          patternMessage:
-            'The property name must only contain alphanumeric characters, underscores and should only be started by any letter character.',
+        key: 'conditionalAddButton',
+        label: 'Conditional Add Button',
+        placeholder: 'show = ...',
+        tooltip: 'Specify condition when Add Button should be displayed.',
+        editor: 'ace',
+        as: 'javascript',
+        wysiwyg: {
+          minLines: 3,
         },
       },
       {
-        weight: 20,
-        type: 'textfield',
+        type: 'checkbox',
+        label: 'Allow Reorder',
+        key: 'reorder',
+        weight: 407,
         input: true,
-        key: 'customOptions.myOption',
-        label: 'My Custom Option',
-        placeholder: 'My Custom Option',
-        validate: {
-          required: true,
-        },
       },
+      {
+        type: 'textfield',
+        label: 'Add Another Text',
+        key: 'addAnother',
+        tooltip: 'Set the text of the Add Another button.',
+        placeholder: 'Add Another',
+        weight: 410,
+        input: true,
+        customConditional(context) {
+          return !context.data.disableAddingRemovingRows;
+        }
+      },
+      {
+        type: 'select',
+        label: 'Add Another Position',
+        key: 'addAnotherPosition',
+        dataSrc: 'values',
+        tooltip: 'Position for Add Another button with respect to Data Grid Array.',
+        defaultValue: 'bottom',
+        input: true,
+        data: {
+          values: [
+            { label: 'Top', value: 'top' },
+            { label: 'Bottom', value: 'bottom' },
+            { label: 'Both', value: 'both' }
+          ]
+        },
+        weight: 411,
+        customConditional(context) {
+          return !context.data.disableAddingRemovingRows;
+        }
+      },
+      {
+        type: 'checkbox',
+        label: 'Equal column width',
+        key: 'layoutFixed',
+        weight: 430,
+        input: true,
+      },
+      {
+        key: 'enableRowGroups',
+        type: 'checkbox',
+        label: 'Enable Row Groups',
+        weight: 440,
+        input: true
+      },
+      {
+        label: 'Groups',
+        disableAddingRemovingRows: false,
+        defaultOpen: false,
+        addAnother: '',
+        addAnotherPosition: 'bottom',
+        mask: false,
+        tableView: true,
+        alwaysEnabled: false,
+        type: 'datagrid',
+        input: true,
+        key: 'rowGroups',
+        reorder: true,
+        components: [
+          {
+            label: 'Label',
+            allowMultipleMasks: false,
+            showWordCount: false,
+            showCharCount: false,
+            tableView: true,
+            alwaysEnabled: false,
+            type: 'textfield',
+            input: true,
+            key: 'label',
+            widget: {
+              type: ''
+            },
+            row: '0-0'
+          },
+          {
+            label: 'Number of Rows',
+            mask: false,
+            tableView: true,
+            alwaysEnabled: false,
+            type: 'number',
+            input: true,
+            key: 'numberOfRows',
+            row: '0-1'
+          }
+        ],
+        weight: 441,
+        conditional: { json: { var: 'data.enableRowGroups' } }
+      },
+      {
+        label: 'Hide Group on Header Click',
+        type: 'checkbox',
+        input: true,
+        key: 'groupToggle',
+        weight: 442,
+        conditional: { json: { var: 'data.enableRowGroups' } }
+      },
+      {
+        label: 'Initialize Empty',
+        type: 'checkbox',
+        input: true,
+        key: 'initEmpty',
+        tooltip: 'The DataGrid will have no visible rows when initialized.',
+        weight: 450
+      }
     ],
   };
 }

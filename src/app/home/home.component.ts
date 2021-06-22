@@ -31,13 +31,13 @@ export class HomeComponent implements AfterViewInit {
   respostasList: any[];
   respostaList: Observable<any>;
   params: Object;
+  options: Object;
   constructor(
     public config: FormioAppConfig,
     public prism: PrismService,
     public viewService: ViewService
   ) {
-    this.params = {nome: "Matheus", sobrenome: "Luiz"},
-    this.form = [];
+    (this.params = {usuarioAdm: true, nome3: {value: 'Matheus'}, nomeGrid: {disabled: true, value: 'luiz'},sobrenome: {disabled: true, value: 'Luiz'}}), (this.form = []);
     this.respostasList = [];
   }
 
@@ -46,9 +46,33 @@ export class HomeComponent implements AfterViewInit {
   }
 
   ngOnInit() {
+    // const data =
+    // {data:{editGrid: [
+    //     {textField: "dsslç,lsçdflçs"},
+    //     {textField: "valor1"},
+    //     {textField: "valor2"},
+    //   ],nome: "Matheus"}}
+    const data = {
+      data: {
+        // editGrid: [
+        //   { textField: "dsslç,lsçdflçs" },
+        //   { textField: "valor1" },
+        //   { textField: "valor2" },
+        //   { textField: "valor3" },
+        // ],
+        nome: "Matheus",
+        sobrenome: "Luiz",
+        teste1: "teste1",
+        estado: "GO",
+        usuarioAdm: true
+      },
+    };
     if (localStorage.getItem("Form")) {
       var t = localStorage.getItem("Form").valueOf();
       this.form = JSON.parse(t);
+      // this.form.components[2].disabled = true
+      // this.form.components[3].disabled = true
+      // this.form.components[4].disabled = true
       this.keyForm = JSON.parse(t).key;
       this.version = JSON.parse(t).version;
       this.respostasListObservable = this.viewService.getAll();
@@ -61,20 +85,17 @@ export class HomeComponent implements AfterViewInit {
             lista.push(valor);
           }
         });
-        var version
-          _.mapValues(
-          _.groupBy(lista, "version"),
-          (rlist) => {
-            version = rlist[0].version 
-            var teste2 = {version: version, data: []};
-            rlist.map((resposta) => {
-              t = _.omit(resposta, "version");
-              if(resposta.version == version)
-              teste2.data.push(t)
-            })
-            this.respostasList.push({version: version, ...teste2})
-          }
-        );
+        var version;
+        _.mapValues(_.groupBy(lista, "version"), (rlist) => {
+          version = rlist[0].version;
+          var teste2 = { version: version, data: [] };
+          rlist.map((resposta) => {
+            t = _.omit(resposta, "version");
+            if (resposta.version == version) teste2.data.push(t);
+          });
+          this.respostasList.push({ version: version, ...teste2 });
+        });
+        this.submission = data;
       });
     }
   }
@@ -105,6 +126,5 @@ export class HomeComponent implements AfterViewInit {
     //     // this.submission = resposta;
     //   }
     // })
-    // console.log(this.submission)
   }
 }

@@ -70,6 +70,9 @@ export class BuilderComponent implements AfterViewInit {
     //     item.label = 'modifiquei a label'
     //   }
     // })
+    // event.form.components.map((item) => {
+    //   item.disabled = false
+    // })
     this.jsonElement.nativeElement.innerHTML = "";
     if(event.form){
       this.jsonElement.nativeElement.appendChild(

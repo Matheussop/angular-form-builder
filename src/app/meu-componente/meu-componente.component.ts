@@ -9,7 +9,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   templateUrl: './meu-componente.component.html',
   styleUrls: ['./meu-componente.component.scss'],
 })
-export class MeuComponenteComponent implements FormioCustomComponent<number> {
+export class MeuComponenteComponent implements FormioCustomComponent<number>  {
   @Input()
   value: number;
 
@@ -27,7 +27,6 @@ export class MeuComponenteComponent implements FormioCustomComponent<number> {
   formioEvent = new EventEmitter<FormioEvent>();
   // https://github.com/formio/angular/pull/443
   emitirEvento() {
-    console.log(this.value + " valor do value")
     this.formioEvent.emit({
       eventName: 'customEvent',
       data: { teste: 'teste' },
