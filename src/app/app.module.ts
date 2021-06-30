@@ -17,8 +17,15 @@ import {environment} from '../environments/environment'
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { FormListComponent } from './form-list/form-list.component';
+import { FormsModule } from '@angular/forms';
+import {TableModule} from 'primeng/table';
+import {ButtonModule} from 'primeng/button';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations'; // added this
+import { HttpClientModule } from '@angular/common/http';
 import { registerMeuComponente } from './meu-componente/meu-componente.formio';
-import { registerEstadoCidadeComponent } from './estado-cidade/estado-cidade.formio';
+import { MeuComponenteComponent } from './meu-componente/meu-componente.component';
+import { SubFormComponent } from './sub-form/sub-form.component';
+
 
 // Make sure we use fontawesome everywhere in Form.io renderers.
 (Formio as any).icons = 'fontawesome';
@@ -33,6 +40,9 @@ import { registerEstadoCidadeComponent } from './estado-cidade/estado-cidade.for
     AppComponent,
     HomeComponent,
     FormListComponent,
+    MeuComponenteComponent,
+    SubFormComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -41,6 +51,12 @@ import { registerEstadoCidadeComponent } from './estado-cidade/estado-cidade.for
     FormioGrid,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
+    FormsModule,
+    TableModule,
+    ButtonModule,
+    // MeuComponentModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
     RouterModule.forRoot([
       {
         path: '',
@@ -53,6 +69,10 @@ import { registerEstadoCidadeComponent } from './estado-cidade/estado-cidade.for
       {
         path: 'manager',
         component: FormListComponent
+      },
+      {
+        path: 'subForm',
+        component: SubFormComponent
       }
     ], {useHash: true})
   ],
@@ -73,5 +93,7 @@ import { registerEstadoCidadeComponent } from './estado-cidade/estado-cidade.for
   bootstrap: [AppComponent],
 })
 export class AppModule { 
-
+  constructor(injector: Injector) {
+    registerMeuComponente(injector);
+  }
 }

@@ -1,0 +1,30 @@
+<div class="container">
+    <p-table [selectionMode]="selectionMode" [(selection)]="linhaSelecionada" dataKey="nome" [columns]="campos" [value]="data"
+[paginator]="hasPagination" [rows]="10" [showCurrentPageReport]="true" 
+currentPageReportTemplate="Apresentando {first} a {last} de {totalRecords} dados" [rowsPerPageOptions]="[10,25,50]">
+>
+  <ng-template *ngIf="headerText != ''" pTemplate="caption">
+      {{headerText}}
+  </ng-template>
+  <ng-template pTemplate="header" let-columns="columns">
+      <tr>
+          <th  *ngFor="let campo of campos" [pSortableColumn]="filter(campo.key)">
+            {{campo.nome}}
+            <p-sortIcon *ngIf="hasFilter" [field]="campo.key"></p-sortIcon>
+          </th>
+      </tr> 
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData let-columns="columns">
+    <tr [pSelectableRow]="rowData">
+        <td *ngFor="let col of columns">
+            {{rowData[col.key]}}
+        </td>
+    </tr> 
+  </ng-template>
+</p-table>
+    <br>
+    <div>
+        <button class="btn_Add" type="button" pButton label="Adicionar" (click)="printLinha()"></button>
+        <button class="btn_Add" type="button" pButton label="Print Linha" (click)="printLinha()"></button>
+    </div>
+</div>

@@ -1,13 +1,9 @@
-import {
-  FormioCustomComponent,
-  FormioEvent,
-} from "./../../../projects/angular-formio/src/elements.common";
+
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { TableModule } from "primeng/table";
-import { Observable, iif } from "rxjs";
+import { Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import { FormListService } from "../form-list/form-list.service";
-import { Router } from "@angular/router";
+import { FormioCustomComponent, FormioEvent } from "../elements.common";
 
 const header = {
   array: [
@@ -46,12 +42,10 @@ export class MeuComponenteComponent implements FormioCustomComponent<number> {
   hasPagination: boolean = false;
   @Input()
   hasFilter: boolean = false;
+
   @Input()
   hasSelect: boolean = false;
-  @Input()
-  hasButtonColumnDelete: boolean = false;
-  @Input()
-  hasButtonUnicDelete: boolean = false;
+
   @Input()
   disabled: boolean;
 
@@ -73,14 +67,6 @@ export class MeuComponenteComponent implements FormioCustomComponent<number> {
 
   @Input() array1: any;
   @Input() value: any;
-  @Input() SubForm: any;
-  
-  textButtonEdit_new: string = 'Novo';
-  forms: any = [];
-  formList: Observable<any>;
-
-  @Input()
-  teste: any = 'asdasdasds'
 
   @Output()
   formioEvent = new EventEmitter<FormioEvent>();
@@ -91,32 +77,27 @@ export class MeuComponenteComponent implements FormioCustomComponent<number> {
     //   data: { teste: 'teste' },
     // });
   }
-  // formList: Observable<any>;
+
   private heroesUrl = "http://localhost:5000/api/Noticia/Tabela"; // URL to web api
-  constructor(private http: HttpClient, private listService: FormListService, public router: Router,) {}
+  constructor(private http: HttpClient) {}
 
   ngOnInit() {
     this.campos = [];
 
     this.data = [];
-    // this.formList = this.listService.getAll();
-    // this.formList.subscribe((item) => {
-    //   item.map((item2) => {
-    //     this.forms.push({nome: item2.NomeFormulario, key: item2.key})
-    //   })
-    // })
   }
 
   extractData() {}
 
   ngOnChanges() {
+
     if (!this.dados && this.url) {
-      var dados = localStorage.getItem("Dados");
-      if (!dados) {
+      // var dados = localStorage.getItem("Dados");
+      // if (!dados) {
         this.getDados();
-      } else {
-        this.data = JSON.parse(dados);
-      }
+      // } else {
+      //   this.data = JSON.parse(dados);
+      // }
     }
 
     if (this.json) {
@@ -142,7 +123,7 @@ export class MeuComponenteComponent implements FormioCustomComponent<number> {
   getDados(): void {
     this.getTabela().subscribe((resp) => {
       console.log(resp);
-      this.data = resp; 
+      this.data = resp;
       localStorage.setItem("Dados", JSON.stringify(resp));
     });
   }
@@ -153,45 +134,5 @@ export class MeuComponenteComponent implements FormioCustomComponent<number> {
 
   printLinha(){
     console.log(this.linhaSelecionada);
-  }
-
-  apagarLinha(line?){
-    if(!line)
-    line = this.linhaSelecionada;
-
-    this.data = this.data.filter((item) => item.id != line.id)
-    //chamar metodo de service para deletar a linha.
-  }
-
-  mudarLinha(){
-    if(this.linhaSelecionada == undefined){
-      this.textButtonEdit_new = 'Novo' 
-    }
-    if(this.linhaSelecionada != undefined){
-      this.textButtonEdit_new = 'Editar'
-      if(this.hasButtonUnicDelete)
-      document.getElementById("btnNew_Edit").classList.add("p-button-secondary");
-    }
-  }
-
-  editarLinha(line?){
-    if(!line)
-      line = this.linhaSelecionada;
-    
-    this.formList = this.listService.getAll();
-    this.formList.subscribe((item) => {
-      item.map((item2) => {
-        if(item2.NomeFormulario === this.SubForm){
-          localStorage.setItem("SubForm", JSON.stringify(item2))
-          if(line)
-            localStorage.setItem("SubFormResp", JSON.stringify(line))
-        
-          localStorage.setItem("SubForm", JSON.stringify(item2))
-          this.router.navigate(['subForm']);
-        }
-        // this.forms.push({nome: item2.NomeFormulario, key: item2.key})
-      })
-      
-    })
   }
 }

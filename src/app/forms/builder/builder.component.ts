@@ -30,12 +30,12 @@ export class BuilderComponent implements AfterViewInit {
   @ViewChild("json", { static: true }) jsonElement?: ElementRef;
   @ViewChild("code", { static: true }) codeElement?: ElementRef;
   @ViewChild("FileSelectInputDialog") FileSelectInputDialog: ElementRef;
-  public form: Object;
+  public form: any;
   public nomeform : string = ''; 
   key: string = '';
   version: number = 0;
   public keyObservable: Promise<any>;
-  public generateForm: Object;
+  public generateForm: any;
   public refreshForm: EventEmitter<FormioRefreshValue> = new EventEmitter();
   constructor(public prism: PrismService,private builderService: BuilderService) {
     this.form = { components: [] };
@@ -113,5 +113,17 @@ export class BuilderComponent implements AfterViewInit {
   onKey(value: string) {
     this.nomeform = value ;
     console.log(this.nomeform)
+  }
+
+  goToTop(){
+    // window.scroll(0,0);
+    let scrollToTop = window.setInterval(() => {
+      let pos = window.pageYOffset;
+      if (pos > 0) {
+          window.scrollTo(0, pos - 80); // how far to scroll on each step
+      } else {
+          window.clearInterval(scrollToTop);
+      }
+  }, 16);
   }
 }

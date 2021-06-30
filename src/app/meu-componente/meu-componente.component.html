@@ -1,2 +1,37 @@
-<div><p>{{placeholder}}</p></div>
-<button (click)="emitirEvento()">Adicionar mais um</button>
+<div class="container">
+    <p-table [selectionMode]="selectionMode" [(selection)]="mudarLinha() || linhaSelecionada" dataKey="id" [columns]="campos" [value]="data"
+[paginator]="hasPagination" [rows]="10" [showCurrentPageReport]="true" 
+currentPageReportTemplate="Apresentando {first} a {last} de {totalRecords} dados" [rowsPerPageOptions]="[10,25,50]">
+>
+  <ng-template *ngIf="headerText != ''" pTemplate="caption">
+      {{headerText}}
+  </ng-template>
+  <ng-template pTemplate="header" let-columns="columns">
+      <tr>
+          <th  *ngFor="let campo of campos" [pSortableColumn]="filter(campo.key)">
+            {{campo.nome}}
+            <p-sortIcon *ngIf="hasFilter" [field]="campo.key"></p-sortIcon>
+          </th>
+          <th *ngIf="hasButtonColumnDelete">
+            <div class="ml-1">Ações</div>  
+          </th>
+      </tr> 
+  </ng-template>apagarLinha
+  <ng-template pTemplate="body" let-rowData let-columns="columns">
+    <tr [pSelectableRow]="rowData">
+        <td *ngFor="let col of columns">
+            {{rowData[col.key]}}
+        </td>
+        <td  *ngIf="hasButtonColumnDelete" >
+            <button class="btn_Add p-button-danger" type="button" pButton label="Deletar" (click)="apagarLinha(rowData)"></button>
+            <button class="btn_Add p-button-secondary" type="button" pButton label="Editar" (click)="editarLinha(rowData)"></button>
+        </td>
+    </tr> 
+  </ng-template>
+</p-table>
+    <br>
+    <div class="buttons">
+        <button *ngIf="hasButtonUnicDelete" class="btn_Add p-button-danger" type="button" pButton label="Deletar" (click)="apagarLinha()"></button>
+        <button *ngIf="hasButtonUnicDelete" class="btn_Add" id="btnNew_Edit" type="button" pButton [label]="textButtonEdit_new" (click)="editarLinha()"></button>
+    </div>
+</div>

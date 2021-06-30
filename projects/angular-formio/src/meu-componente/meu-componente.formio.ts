@@ -4,12 +4,11 @@ import {
   Components,
   registerCustomFormioComponent,
 } from 'projects/angular-formio/src';
-import { FormioCustomComponentInfo } from './../../../projects/angular-formio/src/elements.common';
-
+import { FormioCustomComponentInfo } from "../elements.common";
 const COMPONENT_OPTIONS: FormioCustomComponentInfo = {
   type: 'meuComponente', // custom type. Formio will identify the field with this type.
   selector: 'meu-componente', // custom selector. Angular Elements will create a custom html tag with this selector
-  title: 'Tabela', // Title of the component
+  title: 'Meu Componente', // Title of the component
   group: 'basic', // Build Group
   icon: 'fa fa-star', // Icon
   //  template: 'input', // Optional: define a template for the element. Default: input
@@ -36,7 +35,6 @@ export function registerMeuComponente(injector: Injector) {
 export function minimalEditForm() {
   return {
     components: [
-      { key: 'teste', type: 'hidden' },
       {
         type: 'textfield',
         label: 'PlaceHolder',
@@ -241,22 +239,6 @@ export function minimalEditForm() {
         weight: 450
       },
       {
-        label: 'Botão em cada linha para deletar dados da linha',
-        type: 'checkbox',
-        input: true,
-        key: 'customOptions.hasButtonColumnDelete',
-        tooltip: 'Permite o usuário apagar a linha da tabela (os dados que ela possui).',
-        weight: 450
-      },
-      {
-        label: 'Botão único para deletar dados da linha selecionada',
-        type: 'checkbox',
-        input: true,
-        key: 'customOptions.hasButtonUnicDelete',
-        tooltip: 'Permite o usuário apagar a linha selecionada da tabela (os dados que ela possui).',
-        weight: 450
-      },
-      {
         type: 'select',
         input: true,
         weight: 0,
@@ -405,12 +387,15 @@ export function minimalEditForm() {
       },
       {
         type: 'textfield',
-        label: 'SubForm',
-        key: 'customOptions.SubForm',
-        tooltip: 'Escolher qual formulario sera aberto pelo grid.',
-        placeholder: 'Texto',
-        weight: 410,
         input: true,
+        label: 'Data Path',
+        key: 'selectValues',
+        weight: 12,
+        description: 'The object path to the iterable items.',
+        tooltip: 'The property within the source data, where iterable items reside. For example: results.items or results[0].items',
+        conditional: {
+          json: { '===': [{ var: 'data.dataSrc' }, 'url'] },
+        },
       },
     ],
   };

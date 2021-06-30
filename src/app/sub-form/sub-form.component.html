@@ -1,0 +1,26 @@
+<div class="card" style="margin-bottom: 10px">
+    <div class="card-body">
+      <div class="card bg-light p-3">
+        <h1>Apenas uma tela de home, que no futuro sera alterada.</h1>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Result</h5>
+      <div class="card bg-light p-3">
+        <formio [params]="params" readOnly (submit)="onSubmit($event)" [form]="form" [submission]="submission"></formio>
+      </div>
+    </div>
+    <div class="card mt-2 mb-2" *ngFor="let version of respostasList ">
+      <li class="text-center m-2">Versão: {{version.version}}</li>
+      <ul>
+        <li *ngFor="let resposta of version.data ">
+          {{resposta | json }}
+        </li>
+      </ul>
+    </div>
+    <button class="btn btn-outline-secondary btn-sm form-btn form-btn-use" (click)="voltarGrid($event, form, 'view')"><span class="fa fa-list-alt"></span> Voltar ao Grid</button>&nbsp;
+
+  </div>
+  

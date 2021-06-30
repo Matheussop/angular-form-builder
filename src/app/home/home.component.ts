@@ -23,21 +23,23 @@ interface IResp {
   styleUrls: ["./home.component.scss"],
 })
 export class HomeComponent implements AfterViewInit {
-  public form: Object;
+  public form: any;
   public keyForm: string;
   public version: number;
-  public submission: Object;
+  public submission: any;
   respostasListObservable: Observable<any>;
   respostasList: any[];
   respostaList: Observable<any>;
-  params: Object;
-  options: Object;
+  params: any;
+  options: any;
   constructor(
     public config: FormioAppConfig,
     public prism: PrismService,
     public viewService: ViewService
   ) {
-    (this.params = {usuarioAdm: true, nome3: {value: 'Matheus'}, nomeGrid: {disabled: true, value: 'luiz'},sobrenome: {disabled: true, value: 'Luiz'}}), (this.form = []);
+    (this.params = {
+      // usuarioAdm: true, nome3: {value: 'Matheus'}, nomeGrid: {disabled: true, value: 'luiz'},sobrenome: {disabled: true, value: 'Luiz'}
+    }), (this.form = []);
     this.respostasList = [];
   }
 
@@ -52,7 +54,7 @@ export class HomeComponent implements AfterViewInit {
     //     {textField: "valor1"},
     //     {textField: "valor2"},
     //   ],nome: "Matheus"}}
-    const data = {
+    var data = {
       data: {
         // editGrid: [
         //   { textField: "dsslç,lsçdflçs" },
@@ -60,15 +62,18 @@ export class HomeComponent implements AfterViewInit {
         //   { textField: "valor2" },
         //   { textField: "valor3" },
         // ],
-        nome: "Matheus",
-        sobrenome: "Luiz",
-        teste1: "teste1",
-        estado: "GO",
-        usuarioAdm: true
+        // nome: "Matheus",
+        // sobrenome: "Luiz",
+        // teste1: "teste1",
+        // estado: "GO",
+        // usuarioAdm: true
       },
     };
+    
     if (localStorage.getItem("Form")) {
-      var t = localStorage.getItem("Form").valueOf();
+     
+      var  t = localStorage.getItem("Form").valueOf();
+      
       this.form = JSON.parse(t);
       // this.form.components[2].disabled = true
       // this.form.components[3].disabled = true
@@ -78,22 +83,26 @@ export class HomeComponent implements AfterViewInit {
       this.respostasListObservable = this.viewService.getAll();
       this.respostasListObservable.subscribe((resp) => {
         var lista: IResp[] = [];
-        resp.map((datas) => {
+        lista = resp.map((datas) => {
           if (datas.KeyForm == this.keyForm) {
             var valor = { data: datas.data, version: datas.version };
-            // const valor = Object.assign({},t,event)
-            lista.push(valor);
+            return valor;
           }
         });
         var version;
+        const _ = require("lodash"); 
         _.mapValues(_.groupBy(lista, "version"), (rlist) => {
-          version = rlist[0].version;
-          var teste2 = { version: version, data: [] };
-          rlist.map((resposta) => {
-            t = _.omit(resposta, "version");
-            if (resposta.version == version) teste2.data.push(t);
-          });
-          this.respostasList.push({ version: version, ...teste2 });
+          if(rlist[0]){
+            version = rlist[0].version;
+            var teste2 = { version: version, data: [] };
+            rlist.map((resposta) => {
+              if(resposta.version && version){
+                t = _.omit(resposta, "version");
+                if (resposta.version == version) teste2.data.push(t);
+              }
+            });
+            this.respostasList.push({ version: version, ...teste2 });
+          }
         });
         this.submission = data;
       });
